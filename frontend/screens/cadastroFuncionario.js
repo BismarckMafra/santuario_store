@@ -1,0 +1,48 @@
+import { View, ScrollView, TouchableOpacity, Text, Alert } from 'react-native';
+import CadastroFuncionario from '../componentes/cadastroFuncionario';
+import styles from '../estilos/estilos';
+import Header from '../componentes/header';
+import { useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+
+export default function CadastroFuncionarioScreen({ navigation }) {
+  const { usuarioLogado, isGerente } = useAuth();
+
+  useEffect(() => {
+    if (!usuarioLogado) {
+      Alert.alert(
+        '⚠️ Acesso Negado',
+        'Você precisa estar logado para cadastrar um funcionário.',
+        [{ text: 'OK', onPress: () => navigation.replace('Login') }]
+      );
+      return;
+    }
+
+    if (!isGerente()) {
+      Alert.alert(
+        '⚠️ Acesso Negado',
+        'Apenas gerentes podem cadastrar funcionários.',
+        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      );
+    }
+  }, [usuarioLogado, isGerente, navigation]);
+
+  if (!usuarioLogado || !isGerente()) {
+    return null;
+  }
+
+  return (
+    <View style={styles.screenWrapper}>
+      <Header title="Cadastro de Funcionário" subtitle="Adicione um novo colaborador ao sistema" />
+      <ScrollView style={[styles.container, { paddingHorizontal: 16 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+        <CadastroFuncionario />
+      </ScrollView>
+      <TouchableOpacity
+        style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>← Voltar</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
