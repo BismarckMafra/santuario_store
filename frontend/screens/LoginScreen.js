@@ -18,7 +18,14 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.screenWrapper}>
       <Header title="Login de Funcionário" subtitle="Entre com suas credenciais para continuar" />
-      <ScrollView style={styles.container} contentContainerStyle={[styles.scrollContainer, { paddingHorizontal: 16, paddingTop: 20 }]}> 
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.scrollContainer, { paddingHorizontal: 16, paddingTop: 20 }]}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+        keyboardDismissMode="on-drag"
+      >
         <View style={[styles.card, { marginBottom: 20 }]}> 
           <Text style={styles.formTitle}>Bem-vindo de volta</Text>
           <Text style={styles.formSubtitle}>

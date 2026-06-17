@@ -7,43 +7,55 @@ import { useAuth } from '../context/AuthContext';
 
 
 export default function ExcluirProdutoScreen({ navigation }) {
-  const { usuarioLogado, isGerente } = useAuth();
+  const { usuarioLogado, isFuncionario, isGerente } = useAuth();
 
   useEffect(() => {
-    // Verificar se usuário está logado
     if (!usuarioLogado) {
       Alert.alert(
         '⚠️ Acesso Negado',
         'Você precisa estar logado para acessar esta página.',
-        [{ text: 'OK', onPress: () => navigation.goBack() }]
+        [{ text: 'OK', onPress: () => navigation.replace('Login') }]
       );
       return;
     }
 
-    // Se não for gerente, mostrar mensagem de acesso negado
-    if (!isGerente()) {
-      navigation.goBack();
+    if (!isFuncionario() && !isGerente()) {
       Alert.alert(
         '❌ Acesso Negado',
-        'Apenas gerentes podem remover produtos.'
+        'Apenas funcionários ou gerentes podem remover produtos.',
+        [{ text: 'OK', onPress: () => navigation.canGoBack() ? navigation.goBack() : navigation.replace('Home') }]
       );
     }
-  }, [usuarioLogado, isGerente, navigation]);
+  }, [usuarioLogado, isFuncionario, isGerente, navigation]);
 
-  // Se não for gerente, não renderizar nada
-  if (!isGerente()) {
+  const safeGoBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.replace('Home');
+    }
+  };
+
+  if (!usuarioLogado || (!isFuncionario() && !isGerente())) {
     return null;
   }
 
   return (
     <View style={styles.screenWrapper}>
       <Header title="Excluir Produto" subtitle="Remove um produto do sistema" />
-      <ScrollView style={[styles.container, { paddingHorizontal: 16 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+      <ScrollView
+        style={[styles.container, { paddingHorizontal: 16 }]}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+        keyboardDismissMode="on-drag"
+      >
         <ExcluirProduto />
       </ScrollView>
       <TouchableOpacity
         style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-        onPress={() => navigation.goBack()}
+        onPress={safeGoBack}
       >
         <Text style={styles.buttonText}>← Voltar</Text>
       </TouchableOpacity>

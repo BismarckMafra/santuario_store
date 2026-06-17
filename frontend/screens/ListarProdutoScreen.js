@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import ListarProdutos from '../componentes/listarProduto';
 import styles from '../estilos/estilos';
@@ -36,12 +36,26 @@ export default function ListarProdutoScreen({ navigation }) {
   };
 
   const excluirProduto = async (id) => {
-    try {
-      await firebaseProdutosService.deletar(id);
-      setProdutos(prev => prev.filter(p => p.id !== id));
-    } catch (error) {
-      console.error('Erro ao deletar:', error);
-    }
+    Alert.alert(
+      '⚠️ Confirmar Exclusão',
+      'Tem certeza que deseja excluir este produto?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await firebaseProdutosService.deletar(id);
+              setProdutos(prev => prev.filter(p => p.id !== id));
+              Alert.alert('✅ Sucesso', 'Produto excluído com sucesso.');
+            } catch (error) {
+              Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir produto'}`);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const editarProduto = (id) => {

@@ -36,12 +36,17 @@ export default function LoginFuncionario() {
                     await login(response);
                     setEmail('');
                     setSenha('');
-                    navigation.replace('Home');
+                    Alert.alert('✅ Sucesso', 'Login realizado com sucesso!', [
+                      {
+                        text: 'OK',
+                        onPress: () => navigation.replace('Home'),
+                      }
+                    ]);
                     return;
                 }
                 throw new Error('Credenciais inválidas');
             } catch (error) {
-                Alert.alert('❌ Erro', 'Falha ao fazer login. Por favor, verifique suas credenciais.');
+                Alert.alert('❌ Falha no Login', 'Falha ao fazer login. Por favor, verifique suas credenciais.');
             } finally {
                 setLoading(false);
             }

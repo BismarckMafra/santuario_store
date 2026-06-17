@@ -1,11 +1,13 @@
-import { View, ScrollView, RefreshControl, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, RefreshControl, TouchableOpacity, Text, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import ListarUsuarios from '../componentes/listarUsuarios';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { firebaseUsuariosService as usuariosService } from '../../services/firebase/firebaseUsuariosService';
+import { useAuth } from '../context/AuthContext';
 
 export default function ListarScreen({ navigation }) {
+  const { usuarioLogado, isGerente } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -23,23 +25,55 @@ export default function ListarScreen({ navigation }) {
   };
 
   useEffect(() => {
+    if (!usuarioLogado) {
+      navigation.replace('Login');
+      return;
+    }
+
+    if (!isGerente()) {
+      Alert.alert(
+        '❌ Acesso Negado',
+        'Apenas gerentes podem acessar essa área.',
+        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      );
+      return;
+    }
+
     fetchUsuarios();
     const unsubscribe = navigation.addListener('focus', fetchUsuarios);
     return unsubscribe;
-  }, [navigation]);
+  }, [usuarioLogado, isGerente, navigation]);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchUsuarios();
   };
 
+  if (!usuarioLogado || !isGerente()) {
+    return null;
+  }
+
   const handleDelete = async (id) => {
-    try {
-      await usuariosService.deletar(id);
-      setUsers(users.filter(user => user.id !== id));
-    } catch (error) {
-      console.error('Erro ao deletar:', error);
-    }
+    Alert.alert(
+      '⚠️ Confirmar Exclusão',
+      'Tem certeza que deseja excluir este usuário?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await usuariosService.deletar(id);
+              setUsers(users.filter(user => user.id !== id));
+              Alert.alert('✅ Sucesso', 'Usuário excluído com sucesso.');
+            } catch (error) {
+              Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir usuário'}`);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleEdit = (id) => {
@@ -53,6 +87,10 @@ export default function ListarScreen({ navigation }) {
         style={[styles.container, { paddingHorizontal: 16 }]}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+        keyboardDismissMode="on-drag"
       >
         <ListarUsuarios
           db={users}

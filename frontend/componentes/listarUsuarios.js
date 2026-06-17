@@ -27,6 +27,7 @@ export default function ListarUsuarios({ db, loading, onDelete, onEdit }) {
     <View style={{ flex: 1, paddingHorizontal: 16 }}>
       <FlatList
         scrollEnabled={true}
+        nestedScrollEnabled={true}
         data={db}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (

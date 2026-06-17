@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const usuarioOptions = [
-    { title: 'Cadastrar', screen: 'Cadastro', icon: '➕' },
+    { title: 'Cadastrar', screen: 'CadastroFuncionario', icon: '➕' },
     { title: 'Listar', screen: 'Listar', icon: '📋' },
     { title: 'Alterar', screen: 'Alterar', icon: '✏️' },
     { title: 'Excluir', screen: 'Excluir', icon: '🗑️' },
@@ -69,15 +69,30 @@ export default function HomeScreen({ navigation }) {
     { title: 'Cadastrar', screen: 'CadastroProduto', icon: '➕' },
     { title: 'Listar', screen: 'ListarProduto', icon: '📋' },
     { title: 'Alterar', screen: 'AlterarProduto', icon: '✏️' },
+    { title: 'Excluir', screen: 'ExcluirProduto', icon: '🗑️' },
   ];
 
   const handleProdutoDelete = async (id) => {
-    try {
-      await firebaseProdutosService.deletar(id);
-      setProdutos((prev) => prev.filter((produto) => produto.id !== id));
-    } catch (error) {
-      console.error('Erro ao deletar produto:', error);
-    }
+    Alert.alert(
+      '⚠️ Confirmar Exclusão',
+      'Tem certeza que deseja excluir este produto?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await firebaseProdutosService.deletar(id);
+              setProdutos((prev) => prev.filter((produto) => produto.id !== id));
+              Alert.alert('✅ Sucesso', 'Produto excluído com sucesso.');
+            } catch (error) {
+              Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir produto'}`);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleProdutoEdit = (id) => {
@@ -108,7 +123,14 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.screenWrapper}>
       <Header title="Gestão de Dados" subtitle={`Bem-vindo, ${usuarioLogado.nome}!`} />
       
-      <ScrollView style={[styles.container, { paddingHorizontal: 16 }]} showsVerticalScrollIndicator={true} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        style={[styles.container, { paddingHorizontal: 16 }]}
+        showsVerticalScrollIndicator={true}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         {/* Seção de Usuários */}
         {isGerente() && (
           <View style={[styles.formContainer, { marginTop: 8 }]}>

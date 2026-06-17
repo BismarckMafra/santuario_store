@@ -1,29 +1,55 @@
-import { View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, Alert } from 'react-native';
+import { useEffect } from 'react';
 import Excluir from '../componentes/excluir';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
-import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 export default function ExcluirScreen({ navigation }) {
-  const { usuarioLogado } = useAuth();
+  const { usuarioLogado, isGerente } = useAuth();
 
   useEffect(() => {
-    // Se não está logado, redirecionar para login
     if (!usuarioLogado) {
       navigation.replace('Login');
+      return;
     }
-  }, [usuarioLogado, navigation]);
+
+    if (!isGerente()) {
+      Alert.alert(
+        '❌ Acesso Negado',
+        'Apenas gerentes podem excluir usuários.',
+        [{ text: 'OK', onPress: () => navigation.canGoBack() ? navigation.goBack() : navigation.replace('Home') }]
+      );
+    }
+  }, [usuarioLogado, isGerente, navigation]);
+
+  const safeGoBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.replace('Home');
+    }
+  };
+
+  if (!usuarioLogado || !isGerente()) {
+    return null;
+  }
 
   return (
     <View style={styles.screenWrapper}>
       <Header title="Excluir Usuário" subtitle="Remove um usuário do sistema" />
-      <ScrollView style={[styles.container, { paddingHorizontal: 16 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+      <ScrollView
+        style={[styles.container, { paddingHorizontal: 16 }]}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+      >
         <Excluir />
       </ScrollView>
       <TouchableOpacity
         style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-        onPress={() => navigation.goBack()}
+        onPress={safeGoBack}
       >
         <Text style={styles.buttonText}>← Voltar</Text>
       </TouchableOpacity>
