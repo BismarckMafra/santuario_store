@@ -5,6 +5,7 @@ import Header from '../componentes/header';
 import ListarProdutos from '../componentes/listarProduto';
 import { firebaseProdutosService } from '../../services/firebase/firebaseProdutosService.js';
 import { useAuth } from '../context/AuthContext';
+import { toastPermissionDenied, toastDeleteSuccess } from '../utils/toastService';
 
 
 export default function HomeScreen({ navigation }) {
@@ -58,14 +59,7 @@ export default function HomeScreen({ navigation }) {
     { title: 'Excluir', screen: 'Excluir', icon: '🗑️' },
   ];
 
-  const produtoOptionsGerente = [
-    { title: 'Cadastrar', screen: 'CadastroProduto', icon: '➕' },
-    { title: 'Listar', screen: 'ListarProduto', icon: '📋' },
-    { title: 'Alterar', screen: 'AlterarProduto', icon: '✏️' },
-    { title: 'Excluir', screen: 'ExcluirProduto', icon: '🗑️' },
-  ];
-
-  const produtoOptionsFuncionario = [
+  const produtoOptions = [
     { title: 'Cadastrar', screen: 'CadastroProduto', icon: '➕' },
     { title: 'Listar', screen: 'ListarProduto', icon: '📋' },
     { title: 'Alterar', screen: 'AlterarProduto', icon: '✏️' },
@@ -85,7 +79,7 @@ export default function HomeScreen({ navigation }) {
             try {
               await firebaseProdutosService.deletar(id);
               setProdutos((prev) => prev.filter((produto) => produto.id !== id));
-              Alert.alert('✅ Sucesso', 'Produto excluído com sucesso.');
+              toastDeleteSuccess('Produto');
             } catch (error) {
               Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir produto'}`);
             }
@@ -139,11 +133,11 @@ export default function HomeScreen({ navigation }) {
           </View>
         )}
 
-        {/* Seção de Produtos */}
-        {(isFuncionario() || isGerente()) && (
+        {/* Seção de Produtos - Apenas Gerente */}
+        {isGerente() && (
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>🛍️ Gerenciar Produtos</Text>
-            {renderMenuGrid(isGerente() ? produtoOptionsGerente : produtoOptionsFuncionario)}
+            {renderMenuGrid(produtoOptions)}
           </View>
         )}
 

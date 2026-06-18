@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { firebaseUsuariosService as usuariosService } from "../../services/firebase/firebaseUsuariosService";
 import { useAuth } from '../context/AuthContext';
+import { toastLoginSuccess, toastError } from '../utils/toastService';
 
 
 export default function LoginFuncionario() {
@@ -36,17 +37,13 @@ export default function LoginFuncionario() {
                     await login(response);
                     setEmail('');
                     setSenha('');
-                    Alert.alert('✅ Sucesso', 'Login realizado com sucesso!', [
-                      {
-                        text: 'OK',
-                        onPress: () => navigation.replace('Home'),
-                      }
-                    ]);
+                    toastLoginSuccess(response.nome);
+                    setTimeout(() => navigation.replace('Home'), 1500);
                     return;
                 }
                 throw new Error('Credenciais inválidas');
             } catch (error) {
-                Alert.alert('❌ Falha no Login', 'Falha ao fazer login. Por favor, verifique suas credenciais.');
+                toastError('Verifique suas credenciais', 'Email ou senha incorretos');
             } finally {
                 setLoading(false);
             }

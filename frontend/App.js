@@ -15,6 +15,7 @@ import TestFirebaseScreen from './screens/TestFirebaseScreen';
 import CadastroFuncionarioScreen from './screens/cadastroFuncionario';
 import NavBar from './componentes/NavBar';
 import Footer from './componentes/Footer';
+import { ToastContainer } from './componentes/ToastContainer';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { colors } from './estilos/estilos';
 
@@ -115,6 +116,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppNavigator />
+      <ToastContainer />
     </AuthProvider>
   );
 }

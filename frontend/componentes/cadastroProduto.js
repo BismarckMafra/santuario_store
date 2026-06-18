@@ -2,8 +2,11 @@ import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert } fro
 import styles from "../estilos/estilos";
 import { useState } from "react";
 import { firebaseProdutosService } from "../../services/firebase/firebaseProdutosService.js";
+import { useAuth } from '../context/AuthContext';
+import { toastCreateSuccess, toastError, toastPermissionDenied } from '../utils/toastService';
 
 export default function CadastroProduto() {
+    const { isGerente } = useAuth();
     const [produto, setProduto] = useState({ nome: '', preco: '', descricao: '' });
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -17,6 +20,11 @@ export default function CadastroProduto() {
     };
 
     const adicionarProduto = async () => {
+        if (!isGerente()) {
+            toastPermissionDenied();
+            return;
+        }
+
         const newErrors = validateForm();
         setErrors(newErrors);
 
@@ -25,24 +33,10 @@ export default function CadastroProduto() {
         setLoading(true);
         try {
             const response = await firebaseProdutosService.criar({ nome: produto.nome, preco: produto.preco, descricao: produto.descricao });
-            Alert.alert(
-                '✅ Sucesso',
-                `Produto "${produto.nome}" cadastrado com sucesso!`,
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            setProduto({ nome: '', preco: '', descricao: '' });
-                        }
-                    }
-                ]
-            );
+            toastCreateSuccess(`Produto "${produto.nome}"`);
+            setProduto({ nome: '', preco: '', descricao: '' });
         } catch (error) {
-            Alert.alert(
-                '❌ Erro ao Cadastrar',
-                `Motivo: ${error.message || 'Falha ao cadastrar produto. Verifique sua conexão.'}`,
-                [{ text: 'OK' }]
-            );
+            toastError('Falha ao cadastrar produto', error.message || 'Verifique sua conexão');
         } finally {
             setLoading(false);
         }

@@ -2,8 +2,11 @@ import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert } fro
 import styles from "../estilos/estilos";
 import { useState } from "react";
 import { firebaseUsuariosService as usuariosService } from "../../services/firebase/firebaseUsuariosService";
+import { useAuth } from '../context/AuthContext';
+import { toastCreateSuccess, toastError, toastPermissionDenied } from '../utils/toastService';
 
 export default function CadastroFuncionario() {
+    const { isGerente } = useAuth();
     const [user, setUser] = useState({ nome: '', email: '', senha: '', cargo: '' });
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -21,6 +24,11 @@ export default function CadastroFuncionario() {
     };
 
     const adicionarUsuario = async () => {
+        if (!isGerente()) {
+            toastPermissionDenied();
+            return;
+        }
+
         const newErrors = validateForm();
         setErrors(newErrors);
 
@@ -29,24 +37,10 @@ export default function CadastroFuncionario() {
         setLoading(true);
         try {
             const response = await usuariosService.criar({ nome: user.nome, email: user.email, senha: user.senha, cargo: user.cargo });
-            Alert.alert(
-                '✅ Sucesso',
-                `Funcionário "${user.nome}" cadastrado com sucesso!`,
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            setUser({ nome: '', email: '', senha: '', cargo: '' });
-                        }
-                    }
-                ]
-            );
+            toastCreateSuccess(`Funcionário "${user.nome}"`);
+            setUser({ nome: '', email: '', senha: '', cargo: '' });
         } catch (error) {
-            Alert.alert(
-                '❌ Erro ao Cadastrar',
-                `Motivo: ${error.message || 'Falha ao cadastrar funcionário. Verifique sua conexão.'}`,
-                [{ text: 'OK' }]
-            );
+            toastError('Falha ao cadastrar funcionário', error.message || 'Verifique sua conexão');
         } finally {
             setLoading(false);
         }

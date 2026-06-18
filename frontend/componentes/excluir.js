@@ -2,8 +2,11 @@ import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert } fro
 import styles from "../estilos/estilos";
 import { useState } from "react";
 import { firebaseUsuariosService as usuariosService } from "../../services/firebase/firebaseUsuariosService";
+import { useAuth } from '../context/AuthContext';
+import { toastDeleteSuccess, toastError, toastPermissionDenied } from '../utils/toastService';
 
 export default function Excluir() {
+    const { isGerente } = useAuth();
     const [userId, setUserId] = useState('');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -11,7 +14,7 @@ export default function Excluir() {
 
     const carregarUsuario = async () => {
         if (!userId.trim()) {
-            Alert.alert('❌ Erro', 'Por favor, informe o ID do usuário');
+            toastError('ID do usuário é obrigatório');
             setErrors({ userId: 'ID é obrigatório' });
             return;
         }
@@ -24,17 +27,22 @@ export default function Excluir() {
                 setUser(foundUser);
                 setErrors({});
             } else {
-                Alert.alert('❌ Não Encontrado', `Nenhum usuário encontrado com ID: ${userId}`);
+                toastError(`Usuário não encontrado`, `Nenhum usuário com ID: ${userId}`);
                 setUser(null);
             }
         } catch (error) {
-            Alert.alert('❌ Erro ao Carregar', `Motivo: ${error.message || 'Falha ao carregar usuário'}`);
+            toastError('Falha ao carregar usuário', error.message);
         } finally {
             setLoading(false);
         }
     };
 
     const excluirUsuario = async () => {
+        if (!isGerente()) {
+            toastPermissionDenied();
+            return;
+        }
+
         Alert.alert(
             '⚠️ Confirmar Exclusão',
             `Tem certeza que deseja excluir o usuário "${user.nome}" (ID: ${user.id})?\n\nEsta ação não pode ser desfeita.`,
@@ -47,21 +55,11 @@ export default function Excluir() {
                         setLoading(true);
                         try {
                             await usuariosService.deletar(userId);
-                            Alert.alert(
-                                '✅ Sucesso',
-                                `Usuário "${user.nome}" foi excluído com sucesso!`,
-                                [
-                                    {
-                                        text: 'OK',
-                                        onPress: () => {
-                                            setUserId('');
-                                            setUser(null);
-                                        }
-                                    }
-                                ]
-                            );
+                            toastDeleteSuccess(`Usuário "${user.nome}"`);
+                            setUserId('');
+                            setUser(null);
                         } catch (error) {
-                            Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir usuário'}`);
+                            toastError('Falha ao excluir usuário', error.message);
                         } finally {
                             setLoading(false);
                         }

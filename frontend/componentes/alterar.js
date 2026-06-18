@@ -2,6 +2,8 @@ import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert } fro
 import styles from "../estilos/estilos";
 import { useState } from "react";
 import { firebaseUsuariosService as usuariosService } from "../../services/firebase/firebaseUsuariosService";
+import { useAuth } from '../context/AuthContext';
+import { toastUpdateSuccess, toastError, toastPermissionDenied } from '../utils/toastService';
 
 export default function Alterar() {
     const [userId, setUserId] = useState('');

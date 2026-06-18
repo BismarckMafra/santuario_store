@@ -1,28 +1,29 @@
 import { StyleSheet } from 'react-native';
 
 const colors = {
-  primary: '#5B21B6',
-  primaryLight: '#7C3AED',
-  primaryDark: '#4C1D95',
-  secondary: '#06B6D4',
-  accent: '#EC4899',
-  success: '#10B981',
-  successLight: '#D1FAE5',
-  danger: '#EF4444',
-  dangerLight: '#FEE2E2',
-  warning: '#F59E0B',
-  warningLight: '#FEF3C7',
-  info: '#3B82F6',
-  background: '#F8FAFC',
-  backgroundDark: '#EFF6FF',
-  text: '#0F172A',
-  textLight: '#64748B',
-  textLighter: '#94A3B8',
-  border: '#E2E8F0',
-  borderLight: '#F1F5F9',
+  // Green nature palette - Pet Shop theme
+  primary: '#2D6A4F',          // Deep forest green
+  primaryLight: '#40916C',     // Medium forest green
+  primaryDark: '#1B4332',      // Dark forest green
+  secondary: '#52B788',        // Sage green
+  accent: '#74C69D',           // Light sage green
+  success: '#2D6A4F',          // Green success
+  successLight: '#D8F3DC',     // Light green
+  danger: '#EF4444',           // Red for danger
+  dangerLight: '#FEE2E2',      // Light red
+  warning: '#F59E0B',          // Amber warning
+  warningLight: '#FEF3C7',     // Light amber
+  info: '#2D6A4F',             // Green info
+  background: '#F0F7F4',       // Very light green background
+  backgroundDark: '#E8F5E9',   // Light green
+  text: '#0B3622',             // Dark green text
+  textLight: '#558B6F',        // Medium green text
+  textLighter: '#8FA896',      // Light green text
+  border: '#C7E9C0',           // Light green border
+  borderLight: '#D8F3DC',      // Very light green border
   white: '#FFFFFF',
-  gradientStart: '#5B21B6',
-  gradientEnd: '#7C3AED',
+  gradientStart: '#2D6A4F',    // Deep forest green
+  gradientEnd: '#40916C',      // Medium forest green
 };
 
 const styles = StyleSheet.create({
