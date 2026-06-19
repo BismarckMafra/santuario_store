@@ -2,6 +2,8 @@ import { FlatList, View, Text, ActivityIndicator, ScrollView } from "react-nativ
 import CardProduto from "./cardProduto";
 import styles from "../estilos/estilos";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 
 interface Produto {
   id: number;

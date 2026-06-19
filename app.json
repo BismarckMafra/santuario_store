@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "aula2",
-    "slug": "aula2",
+    "name": "santuario_store",
+    "slug": "santuario_store",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
