@@ -1,12 +1,13 @@
-import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import styles from "../estilos/estilos";
 import { useState } from "react";
 import { firebaseProdutosService } from "../../services/firebase/firebaseProdutosService";
 import { useAuth } from '../context/AuthContext';
 import { toastDeleteSuccess, toastError, toastPermissionDenied } from '../utils/toastService';
+import { confirmAction } from '../utils/confirmAction';
 
 export default function ExcluirProduto() {
-    const { isGerente } = useAuth();
+    const { isFuncionario, isGerente } = useAuth();
     const [produtoId, setProdutoId] = useState('');
     const [produto, setProduto] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -33,35 +34,30 @@ export default function ExcluirProduto() {
     };
 
     const excluirProduto = async () => {
-        if (!isGerente()) {
+        if (!isGerente() && !isFuncionario()) {
             toastPermissionDenied();
             return;
         }
 
-        Alert.alert(
-            '⚠️ Confirmar Exclusão',
-            `Tem certeza que deseja excluir o produto "${produto.nome}" (ID: ${produto.id})?\n\nEsta ação não pode ser desfeita.`,
-            [
-                { text: 'Cancelar', style: 'cancel' },
-                {
-                    text: 'Excluir',
-                    style: 'destructive',
-                    onPress: async () => {
-                        setLoading(true);
-                        try {
-                            await firebaseProdutosService.deletar(produtoId);
-                            toastDeleteSuccess(`Produto "${produto.nome}"`);
-                            setProdutoId('');
-                            setProduto(null);
-                        } catch (error) {
-                            toastError('Falha ao excluir produto', error.message);
-                        } finally {
-                            setLoading(false);
-                        }
-                    }
+        confirmAction({
+            title: 'Confirmar exclusão',
+            message: `Tem certeza que deseja excluir o produto "${produto.nome}" (ID: ${produto.id})?\n\nEsta ação não pode ser desfeita.`,
+            confirmText: 'Excluir',
+            destructive: true,
+            onConfirm: async () => {
+                setLoading(true);
+                try {
+                    await firebaseProdutosService.deletar(produtoId);
+                    toastDeleteSuccess(`Produto "${produto.nome}"`);
+                    setProdutoId('');
+                    setProduto(null);
+                } catch (error) {
+                    toastError('Falha ao excluir produto', error.message);
+                } finally {
+                    setLoading(false);
                 }
-            ]
-        );
+            },
+        });
     };
 
     return (

@@ -5,9 +5,10 @@ import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { firebaseProdutosService } from '../../services/firebase/firebaseProdutosService.js';
 import { useAuth } from '../context/AuthContext';
+import { confirmAction } from '../utils/confirmAction';
 
 export default function ListarProdutoScreen({ navigation }) {
-  const { usuarioLogado } = useAuth();
+  const { usuarioLogado, isFuncionario, isGerente } = useAuth();
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,34 +36,35 @@ export default function ListarProdutoScreen({ navigation }) {
     fetchProdutos();
   };
 
+  const canManageProducts = !!usuarioLogado && (isFuncionario() || isGerente());
+
   const excluirProduto = async (id) => {
-    Alert.alert(
-      '⚠️ Confirmar Exclusão',
-      'Tem certeza que deseja excluir este produto?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Excluir',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await firebaseProdutosService.deletar(id);
-              setProdutos(prev => prev.filter(p => p.id !== id));
-              Alert.alert('✅ Sucesso', 'Produto excluído com sucesso.');
-            } catch (error) {
-              Alert.alert('❌ Erro ao Excluir', `Motivo: ${error.message || 'Falha ao excluir produto'}`);
-            }
-          },
-        },
-      ]
-    );
+    if (!canManageProducts) {
+      return;
+    }
+
+    confirmAction({
+      title: 'Confirmar exclusão',
+      message: 'Tem certeza que deseja excluir este produto?',
+      confirmText: 'Excluir',
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await firebaseProdutosService.deletar(id);
+          setProdutos(prev => prev.filter(p => p.id !== id));
+          Alert.alert('Sucesso', 'Produto excluído com sucesso.');
+        } catch (error) {
+          Alert.alert('Erro ao excluir', `Motivo: ${error.message || 'Falha ao excluir produto'}`);
+        }
+      },
+    });
   };
 
   const editarProduto = (id) => {
-    navigation.navigate('AlterarProduto', { id });
+    if (canManageProducts) {
+      navigation.navigate('AlterarProduto', { id });
+    }
   };
-
-  const canManageProducts = !!usuarioLogado;
 
   return (
     <View style={styles.screenWrapper}>
@@ -90,9 +92,9 @@ export default function ListarProdutoScreen({ navigation }) {
       ) : (
         <TouchableOpacity
           style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.replace('Home')}
         >
-          <Text style={styles.buttonText}>← Voltar</Text>
+          <Text style={styles.buttonText}>Voltar para Home</Text>
         </TouchableOpacity>
       )}
     </View>

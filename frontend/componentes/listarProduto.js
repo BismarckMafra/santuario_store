@@ -1,9 +1,16 @@
 import { FlatList, View, Text, ActivityIndicator } from "react-native";
-import CardUsuario from "./cardProduto";
 import styles from "../estilos/estilos";
 import CardProduto from "./cardProduto";
 
-export default function ListarProdutos({ db, loading, onDelete, onEdit }) {
+export default function ListarProdutos({
+  db,
+  loading,
+  onDelete,
+  onEdit,
+  refreshing = false,
+  onRefresh,
+  scrollEnabled = true,
+}) {
  
   if (loading) {
     return (
@@ -23,11 +30,26 @@ export default function ListarProdutos({ db, loading, onDelete, onEdit }) {
     );
   }
 
+  if (!scrollEnabled) {
+    return (
+      <View style={{ paddingHorizontal: 16 }}>
+        {db.map((item) => (
+          <CardProduto
+            key={item.id.toString()}
+            props={item}
+            onDelete={onDelete}
+            onEdit={onEdit}
+          />
+        ))}
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, paddingHorizontal: 16 }}>
       <FlatList
-        scrollEnabled={true}
-        nestedScrollEnabled={true}
+        style={styles.listScroll}
+        scrollEnabled={scrollEnabled}
         data={db}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
@@ -37,6 +59,8 @@ export default function ListarProdutos({ db, loading, onDelete, onEdit }) {
             onEdit={onEdit}
           />
         )}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         contentContainerStyle={{ paddingVertical: 8 }}
       />
     </View>

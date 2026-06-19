@@ -27,12 +27,8 @@ export default function CadastroFuncionarioScreen({ navigation }) {
     }
   }, [usuarioLogado, isGerente, navigation]);
 
-  const safeGoBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.replace('Home');
-    }
+  const voltarParaHome = () => {
+    navigation.replace('Home');
   };
 
   if (!usuarioLogado || !isGerente()) {
@@ -43,7 +39,7 @@ export default function CadastroFuncionarioScreen({ navigation }) {
     <View style={styles.screenWrapper}>
       <Header title="Cadastro de Funcionário" subtitle="Adicione um novo colaborador ao sistema" />
       <ScrollView
-        style={[styles.container, { paddingHorizontal: 16 }]}
+        style={[styles.container, styles.scrollArea, { paddingHorizontal: 16 }]}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
         keyboardShouldPersistTaps="handled"
         nestedScrollEnabled={true}
@@ -52,9 +48,9 @@ export default function CadastroFuncionarioScreen({ navigation }) {
       </ScrollView>
       <TouchableOpacity
         style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-        onPress={safeGoBack}
+        onPress={voltarParaHome}
       >
-        <Text style={styles.buttonText}>← Voltar</Text>
+        <Text style={styles.buttonText}>Voltar para Home</Text>
       </TouchableOpacity>
     </View>
   );

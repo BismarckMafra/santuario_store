@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 const colors = {
   // Green nature palette - Pet Shop theme
@@ -30,9 +30,21 @@ const styles = StyleSheet.create({
   // ============ LAYOUT ============
   container: {
     flex: 1,
+    minHeight: 0,
     backgroundColor: colors.background,
     paddingHorizontal: 0,
     paddingVertical: 0,
+  },
+
+  scrollArea: {
+    flex: 1,
+    minHeight: 0,
+    ...(Platform.OS === 'web'
+      ? {
+          overflowY: 'auto',
+          overscrollBehavior: 'contain',
+        }
+      : {}),
   },
 
   scrollContainer: {
@@ -40,8 +52,16 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
 
+  homeContent: {
+    flexGrow: 1,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 96,
+  },
+
   screenWrapper: {
     flex: 1,
+    minHeight: 0,
     backgroundColor: colors.background,
     flexDirection: 'column',
   },
@@ -77,7 +97,7 @@ const styles = StyleSheet.create({
 
   // ============ CARDS ============
   card: {
-    borderRadius: 16,
+    borderRadius: 8,
     padding: 18,
     marginBottom: 16,
     shadowColor: '#000',
@@ -285,7 +305,7 @@ const styles = StyleSheet.create({
   // ============ FORMS ============
   formContainer: {
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: 8,
     padding: 20,
     marginBottom: 20,
     marginHorizontal: 16,
@@ -318,6 +338,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
+  listScroll: {
+    flex: 1,
+    minHeight: 0,
+    ...(Platform.OS === 'web'
+      ? {
+          overflowY: 'auto',
+          overscrollBehavior: 'contain',
+        }
+      : {}),
+  },
+
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -344,7 +375,7 @@ const styles = StyleSheet.create({
 
   navCard: {
     backgroundColor: colors.white,
-    borderRadius: 14,
+    borderRadius: 8,
     padding: 18,
     flex: 0.48,
     alignItems: 'center',

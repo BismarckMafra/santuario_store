@@ -84,7 +84,7 @@ export default function ListarScreen({ navigation }) {
     <View style={styles.screenWrapper}>
       <Header title="Usuários" subtitle={`Total: ${users.length} registros`} />
       <ScrollView
-        style={[styles.container, { paddingHorizontal: 16 }]}
+        style={[styles.container, styles.scrollArea, { paddingHorizontal: 16 }]}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         keyboardShouldPersistTaps="handled"
@@ -101,9 +101,9 @@ export default function ListarScreen({ navigation }) {
       </ScrollView>
       <TouchableOpacity
         style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.replace('Home')}
       >
-        <Text style={styles.buttonText}>← Voltar</Text>
+        <Text style={styles.buttonText}>Voltar para Home</Text>
       </TouchableOpacity>
     </View>
   );

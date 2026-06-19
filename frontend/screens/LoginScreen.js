@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.screenWrapper}>
       <Header title="Login de Funcionário" subtitle="Entre com suas credenciais para continuar" />
       <ScrollView
-        style={styles.container}
+        style={[styles.container, styles.scrollArea]}
         contentContainerStyle={[styles.scrollContainer, { paddingHorizontal: 16, paddingTop: 20 }]}
         keyboardShouldPersistTaps="handled"
         nestedScrollEnabled={true}

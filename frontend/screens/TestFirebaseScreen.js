@@ -10,9 +10,9 @@ export default function TestFirebaseScreen({ navigation }) {
       <TestFirebase />
       <TouchableOpacity
         style={[styles.button, { marginHorizontal: 16, marginBottom: 16 }]}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.replace('Home')}
       >
-        <Text style={styles.buttonText}>← Voltar</Text>
+        <Text style={styles.buttonText}>Voltar para Home</Text>
       </TouchableOpacity>
     </View>
   );
