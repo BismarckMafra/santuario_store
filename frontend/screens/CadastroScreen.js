@@ -4,6 +4,7 @@ import CadastroFuncionario from '../componentes/cadastroFuncionario';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../componentes/footer.js';
 
 export default function CadastroScreen({ navigation }) {
   const { usuarioLogado, isGerente } = useAuth();

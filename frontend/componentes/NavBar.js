@@ -2,6 +2,7 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import styles from '../estilos/estilos';
 
+
 export default function NavBar({ navigationRef }) {
   const { usuarioLogado, isFuncionario, isGerente, logout } = useAuth();
   const routeName = navigationRef?.isReady() ? navigationRef.getCurrentRoute()?.name : null;

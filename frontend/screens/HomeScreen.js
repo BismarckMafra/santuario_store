@@ -7,6 +7,7 @@ import { firebaseProdutosService } from '../../services/firebase/firebaseProduto
 import { useAuth } from '../context/AuthContext';
 import { toastDeleteSuccess } from '../utils/toastService';
 import { confirmAction } from '../utils/confirmAction';
+import Footer from '../componentes/footer.js';
 
 export default function HomeScreen({ navigation }) {
   const { usuarioLogado, isFuncionario, isGerente, logout } = useAuth();

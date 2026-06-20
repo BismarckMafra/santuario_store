@@ -4,6 +4,7 @@ import ExcluirProduto from '../componentes/excluirProduto';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../componentes/footer.js';
 
 
 export default function ExcluirProdutoScreen({ navigation }) {

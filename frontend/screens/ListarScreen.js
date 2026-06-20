@@ -5,6 +5,7 @@ import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { firebaseUsuariosService as usuariosService } from '../../services/firebase/firebaseUsuariosService';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../componentes/footer.js';
 
 export default function ListarScreen({ navigation }) {
   const { usuarioLogado, isGerente } = useAuth();

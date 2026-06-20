@@ -14,7 +14,7 @@ import ExcluirProdutoScreen from './frontend/screens/ExcluirProdutoScreen';
 import TestFirebaseScreen from './frontend/screens/TestFirebaseScreen';
 import CadastroFuncionarioScreen from './frontend/screens/cadastroFuncionario';
 import NavBar from './frontend/componentes/NavBar';
-import Footer from './frontend/componentes/Footer';
+import Footer from './frontend/componentes/footer';
 import { ToastContainer } from './frontend/componentes/ToastContainer';
 import { AuthProvider, useAuth } from './frontend/context/AuthContext';
 import { colors } from './frontend/estilos/estilos';

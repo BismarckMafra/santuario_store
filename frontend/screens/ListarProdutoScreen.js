@@ -6,6 +6,7 @@ import Header from '../componentes/header';
 import { firebaseProdutosService } from '../../services/firebase/firebaseProdutosService.js';
 import { useAuth } from '../context/AuthContext';
 import { confirmAction } from '../utils/confirmAction';
+import Footer from '../componentes/footer.js';
 
 export default function ListarProdutoScreen({ navigation }) {
   const { usuarioLogado, isFuncionario, isGerente } = useAuth();

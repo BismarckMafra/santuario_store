@@ -3,6 +3,7 @@ import TestFirebase from '../componentes/testFirebase';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 
+
 export default function TestFirebaseScreen({ navigation }) {
   return (
     <View style={styles.screenWrapper}>

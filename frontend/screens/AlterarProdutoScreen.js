@@ -5,6 +5,7 @@ import AlterarProduto from '../componentes/alterarProduto.js';
 import styles from '../estilos/estilos';
 import Header from '../componentes/header';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../componentes/footer.js';
 
 export default function AlterarProdutoScreen({ navigation }) {
   const { usuarioLogado, isFuncionario, isGerente } = useAuth();
